@@ -8,24 +8,15 @@ import by.project.dartlen.rss_reader.di.modules.ApplicationModule;
 import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 @Module(includes = ApplicationModule.class)
 public class LocalModule {
 
     @Provides
     @Singleton
-    RealmConfiguration provideRealmConfiguration(Application application)
+    Realm provideRealm(Application application)
     {
-        return new RealmConfiguration.Builder()
-                .name("rss.realm")
-                .build();
-    }
-
-    @Provides
-    @Singleton
-    Realm provideRealm(RealmConfiguration realmConfiguration)
-    {
-        return Realm.getInstance(realmConfiguration);
+        Realm.init(application);
+        return Realm.getDefaultInstance();
     }
 }

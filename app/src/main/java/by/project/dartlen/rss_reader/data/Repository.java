@@ -1,17 +1,23 @@
 package by.project.dartlen.rss_reader.data;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import by.project.dartlen.rss_reader.data.local.Local;
 import by.project.dartlen.rss_reader.data.local.LocalData;
+import by.project.dartlen.rss_reader.data.local.realm.RssItemRealm;
 import by.project.dartlen.rss_reader.data.remote.Remote;
 import by.project.dartlen.rss_reader.data.remote.RemoteData;
 import by.project.dartlen.rss_reader.data.remote.retrofit.RssCallback;
 import by.project.dartlen.rss_reader.data.remote.retrofit.RssService;
 import by.project.dartlen.rss_reader.data.rss.RssFeed;
+import by.project.dartlen.rss_reader.data.rss.RssItem;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,5 +62,16 @@ public class Repository {
                 callback.onFailed(call.toString());
             }
         });
+
+
+        /*RealmResults<RssItemRealm> x = mLocalData.getRssItemsRealm();
+        Log.d("das","dsa");*/
     }
+
+    public void saveRssItems(List<RssItem> listRssItems){
+        mLocalData.saveRssItems(listRssItems);
+    }
+
+
+
 }

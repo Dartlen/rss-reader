@@ -7,9 +7,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,11 +16,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import by.project.dartlen.rss_reader.R;
 import by.project.dartlen.rss_reader.data.Repository;
 import by.project.dartlen.rss_reader.data.remote.retrofit.RssCallback;
 import by.project.dartlen.rss_reader.data.rss.RssItem;
 import by.project.dartlen.rss_reader.di.scope.ActivityScope;
+import by.project.dartlen.rss_reader.rss.RssFragment;
 import dagger.android.support.DaggerAppCompatActivity;
 
 @ActivityScope
@@ -30,6 +31,12 @@ public class MainActivity extends DaggerAppCompatActivity
 
     @Inject
     Repository mRepository;
+
+    @Inject
+    RssFragment mRssFragment;
+
+    @BindView(R.id.fragment)
+    ContentFrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +58,12 @@ public class MainActivity extends DaggerAppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment, mRssFragment).addToBackStack("notefragment").commit();
 
         mRepository.getRssFeed(new RssCallback() {
             @Override
             public void onLogined(List<RssItem> result) {
-                Log.d(result.size()+"","loh");
+                mRepository.saveRssItems(result);
             }
 
             @Override
@@ -63,16 +71,18 @@ public class MainActivity extends DaggerAppCompatActivity
 
             }
         },"https://news.tut.by/rss/index.rss");
+
+
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-        }
+        }*/
     }
 
     @Override
