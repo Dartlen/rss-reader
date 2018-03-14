@@ -1,5 +1,7 @@
 package by.project.dartlen.rss_reader;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import javax.inject.Inject;
 
 import by.project.dartlen.rss_reader.data.Repository;
@@ -17,6 +19,13 @@ public class App extends DaggerApplication {
     protected AndroidInjector<? extends  DaggerApplication> applicationInjector(){
         AppComponent appComponets = DaggerAppComponent.builder().application(this).build();
         appComponets.inject(this);
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+
+        }
+        LeakCanary.install(this);
+
         return appComponets;
     }
 

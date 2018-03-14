@@ -12,15 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import by.project.dartlen.rss_reader.R;
 import by.project.dartlen.rss_reader.data.Repository;
-import by.project.dartlen.rss_reader.data.remote.retrofit.RssCallback;
-import by.project.dartlen.rss_reader.data.rss.RssItem;
 import by.project.dartlen.rss_reader.di.scope.ActivityScope;
 import by.project.dartlen.rss_reader.rss.RssFragment;
 import dagger.android.support.DaggerAppCompatActivity;
@@ -60,7 +56,7 @@ public class MainActivity extends DaggerAppCompatActivity
 
         getSupportFragmentManager().beginTransaction().add(R.id.fragment, mRssFragment).addToBackStack("notefragment").commit();
 
-        mRepository.getRssFeed(new RssCallback() {
+        /*mRepository.getRssFeed(new RssCallback() {
             @Override
             public void onLogined(List<RssItem> result) {
                 mRepository.saveRssItems(result);
@@ -70,7 +66,8 @@ public class MainActivity extends DaggerAppCompatActivity
             public void onFailed(String error) {
 
             }
-        },"https://news.tut.by/rss/index.rss");
+        },"https://news.tut.by/rss/index.rss");*/
+
 
 
     }
@@ -132,3 +129,6 @@ public class MainActivity extends DaggerAppCompatActivity
 
 
 }
+//TODO:Задание 2. «Rss-reader»
+//Требуется разработать приложение с графическим интерфейсом поддерживающее просмотр любой rss-ленты. Необходимо реализовать парсинг xml и отображение списка новостей и так же детальное отображение новости используя UIWebView(то есть открываться страница будет в приложении, а не браузере)
+//Можно загружать новостную ленту как из файла так и из интернета.

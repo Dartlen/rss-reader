@@ -1,4 +1,4 @@
-package by.project.dartlen.rss_reader.rss;
+package by.project.dartlen.rss_reader.webview;
 
 import by.project.dartlen.rss_reader.di.scope.ActivityScope;
 import by.project.dartlen.rss_reader.di.scope.FragmentScope;
@@ -7,13 +7,13 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 @Module
-public abstract class RssModule {
+public abstract class WebViewModule {
 
     @FragmentScope
     @ContributesAndroidInjector
-    abstract RssFragment rssFragment();
+    abstract WebViewFragment webViewFragment();
 
     @ActivityScope
     @Binds
-    abstract RssContract.Presenter rssPresenter(RssPresenter presenter);
+    abstract WebViewContract.Presenter webViewPresenter(WebViewPresenter presenter);
 }
