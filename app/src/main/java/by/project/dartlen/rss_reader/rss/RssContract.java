@@ -4,6 +4,11 @@ import by.project.dartlen.rss_reader.base.BasePresenter;
 import by.project.dartlen.rss_reader.base.BaseView;
 
 public interface RssContract {
-    interface View extends BaseView<RssContract.Presenter>{}
-    interface Presenter extends BasePresenter<RssContract.View>{}
+    interface View extends BaseView<RssContract.Presenter>{
+        void showProgress();
+        void hideProgress();
+    }
+    interface Presenter extends BasePresenter<RssContract.View>{
+        void start();
+    }
 }

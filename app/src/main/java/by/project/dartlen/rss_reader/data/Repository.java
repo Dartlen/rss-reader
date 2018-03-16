@@ -1,7 +1,6 @@
 package by.project.dartlen.rss_reader.data;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.List;
 
@@ -10,23 +9,18 @@ import javax.inject.Singleton;
 
 import by.project.dartlen.rss_reader.data.local.Local;
 import by.project.dartlen.rss_reader.data.local.LocalData;
-import by.project.dartlen.rss_reader.data.local.realm.RssItemRealm;
+import by.project.dartlen.rss_reader.data.local.realm.RssUrlRealm;
 import by.project.dartlen.rss_reader.data.remote.Remote;
 import by.project.dartlen.rss_reader.data.remote.RemoteData;
-import by.project.dartlen.rss_reader.data.remote.retrofit.RssCallback;
-import by.project.dartlen.rss_reader.data.remote.retrofit.RssService;
-import by.project.dartlen.rss_reader.data.rss.RssFeed;
+import by.project.dartlen.rss_reader.data.remote.callbacks.GetUrls;
+import by.project.dartlen.rss_reader.data.remote.callbacks.RssCallback;
+import by.project.dartlen.rss_reader.data.remote.callbacks.RssValidateCallback;
 import by.project.dartlen.rss_reader.data.rss.RssItem;
-import io.realm.RealmResults;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @Singleton
 public class Repository {
 
-    @Inject
-    RssService mRssService;
+
 
     final private RemoteData mRemoteData;
     final private LocalData mLocalData;
@@ -37,7 +31,8 @@ public class Repository {
         mLocalData  = localDataSource;
     }
 
-    public void getRssFeed(@NonNull RssCallback callback, String url){
+    public void getRssFeed(@NonNull RssCallback callback){
+
         /*retrofit2.Call<RssFeed> call = mRssService.getRss(url);
         call.enqueue(new Callback<RssFeed>() {
             @Override
@@ -51,19 +46,6 @@ public class Repository {
             }
         });*/
 
-        mRssService.getRss(url).enqueue(new Callback<RssFeed>() {
-            @Override
-            public void onResponse(Call<RssFeed> call, Response<RssFeed> response) {
-                callback.onLogined(response.body().getItems());
-            }
-
-            @Override
-            public void onFailure(Call<RssFeed> call, Throwable t) {
-                callback.onFailed(call.toString());
-            }
-        });
-
-
         /*RealmResults<RssItemRealm> x = mLocalData.getRssItemsRealm();
         Log.d("das","dsa");*/
     }
@@ -72,6 +54,36 @@ public class Repository {
         mLocalData.saveRssItems(listRssItems);
     }
 
+    public void saveUrl(String url){
+        mLocalData.saveRssUrl(url);
+    }
 
+    public void validateRssFeedRemote(final RssValidateCallback callback, String url){
+        mRemoteData.validateRssFeedRemote(new RssValidateCallback() {
+            @Override
+            public void onValidate(Boolean result) {
+              callback.onValidate(result);
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onFailed(error);
+            }
+        }, url);
+    }
+
+    public void getUrls(final GetUrls callback){
+        mLocalData.getUrls(new GetUrls() {
+            @Override
+            public void onGetUrls(List<RssUrlRealm> result) {
+                callback.onGetUrls(result);
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onFailed(error);
+            }
+        });
+    }
 
 }

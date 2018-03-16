@@ -1,6 +1,10 @@
 package by.project.dartlen.rss_reader.data.local.realm;
 
+import javax.inject.Inject;
+
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
 
 public class RssItemRealm extends RealmObject {
 
@@ -9,6 +13,9 @@ public class RssItemRealm extends RealmObject {
     private String mImage;
     private String mPublishDate;
     private String mDescription;
+
+    @Index
+    public long urlId;
 
     public RssItemRealm(){}
 
@@ -50,5 +57,13 @@ public class RssItemRealm extends RealmObject {
 
     public void setDescription(String Description) {
         this.mDescription = Description;
+    }
+
+    public long getUrlId() {
+        return urlId;
+    }
+
+    public void setUrlId(long urlId) {
+        this.urlId = urlId;
     }
 }
