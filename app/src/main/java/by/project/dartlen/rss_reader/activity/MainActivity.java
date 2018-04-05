@@ -14,12 +14,18 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import by.project.dartlen.rss_reader.R;
 import by.project.dartlen.rss_reader.data.Repository;
+import by.project.dartlen.rss_reader.data.local.realm.RssUrlRealm;
+import by.project.dartlen.rss_reader.data.remote.callbacks.GetUrls;
+import by.project.dartlen.rss_reader.data.remote.callbacks.RssCallback;
 import by.project.dartlen.rss_reader.data.remote.callbacks.RssValidateCallback;
+import by.project.dartlen.rss_reader.data.rss.RssItem;
 import by.project.dartlen.rss_reader.di.scope.ActivityScope;
 import by.project.dartlen.rss_reader.rss.RssFragment;
 import dagger.android.support.DaggerAppCompatActivity;
@@ -35,6 +41,8 @@ public class MainActivity extends DaggerAppCompatActivity{
 
     @BindView(R.id.fragment)
     ContentFrameLayout frameLayout;
+
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +61,9 @@ public class MainActivity extends DaggerAppCompatActivity{
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+
+        createNavigationView();
 
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
@@ -76,6 +86,7 @@ public class MainActivity extends DaggerAppCompatActivity{
                                             @Override
                                             public void onValidate(Boolean result) {
                                                 mRepository.saveUrl(url);
+
                                             }
 
                                             @Override
@@ -93,12 +104,27 @@ public class MainActivity extends DaggerAppCompatActivity{
                         }
                         case R.id.nav_load_from_file:
                             break;
+                        case R.id.nav_all:
+                            mRepository.getRssFeed(new RssCallback() {
+                                @Override
+                                public void onLogined(List<RssItem> result) {
+                                    mRssFragment.showRss(result);
+                                }
+
+                                @Override
+                                public void onFailed(String error) {
+
+                                }
+                            });
                     }
                     // Add code here to update the UI based on the item selected
                     // For example, swap UI fragments here
 
                     return true;
                 });
+
+
+
         getSupportFragmentManager().beginTransaction().add(R.id.fragment, mRssFragment).addToBackStack("notefragment").commit();
 
         /*mRepository.getRssFeed(new RssCallback() {
@@ -114,6 +140,38 @@ public class MainActivity extends DaggerAppCompatActivity{
         },"https://news.tut.by/rss/index.rss");*/
 
 
+
+    }
+
+    public void createNavigationView(){
+        mRepository.getUrls(new GetUrls() {
+            @Override
+            public void onGetUrls(List<RssUrlRealm> result) {
+                for(RssUrlRealm x: result)
+                    navigationView.getMenu().add(x.getUrl()).setIcon(R.drawable.ic_menu_gallery).setOnMenuItemClickListener(
+                            item -> {
+                                mRepository.getRssFeed(new RssCallback() {
+                                    @Override
+                                    public void onLogined(List<RssItem> result) {
+                                        mRssFragment.showRss(result);
+
+                                    }
+
+                                    @Override
+                                    public void onFailed(String error) {
+
+                                    }
+                                }, item.getTitle().toString());
+                                return true;
+                            }
+                    );
+            }
+
+            @Override
+            public void onFailed(String error) {
+
+            }
+        });
 
     }
 

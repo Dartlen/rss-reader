@@ -31,15 +31,37 @@ public class LocalData {
     }
 
     public void saveRssItems(List<RssItem> listRssItems){
-        realm.executeTransactionAsync(realm1 -> realm1.copyToRealmOrUpdate(mapper.mapListToRssItemRealm(listRssItems)));
+        realm.executeTransactionAsync(realm -> {
+
+            for(RssItem item: listRssItems){
+                RssItemRealm search = realm.where(RssItemRealm.class).equalTo("mLink", item.getLink()).findFirst();
+                if(search==null)
+                    mapper.mapToRssItemRealm(item);
+            }
+
+        }, () -> {
+
+        });
+
     }
 
     public void saveRssUrl(String url){
-        realm.executeTransactionAsync(realm1 ->
+        realm.executeTransaction(realm1 ->
         {
             RssUrlRealm urlRealm = new RssUrlRealm();
             urlRealm.setUrl(url);
-            realm1.copyToRealmOrUpdate(urlRealm);
+            RssUrlRealm search = realm.where(RssUrlRealm.class).equalTo("url", url).findFirst();
+            Number searchId = realm.where(RssUrlRealm.class).max("id");
+            int nextId;
+            if(searchId==null) {
+                nextId = 1;
+            }else {
+                nextId = searchId.intValue()+1;
+            }
+            if(search==null) {
+                urlRealm.setId(nextId);
+                realm1.insertOrUpdate(urlRealm);
+            }
         });
     }
 

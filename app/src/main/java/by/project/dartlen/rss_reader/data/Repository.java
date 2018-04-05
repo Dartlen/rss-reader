@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 
 import by.project.dartlen.rss_reader.data.local.Local;
 import by.project.dartlen.rss_reader.data.local.LocalData;
+import by.project.dartlen.rss_reader.data.local.mappers.RssItemsDataModelMapper;
+import by.project.dartlen.rss_reader.data.local.realm.RssItemRealm;
 import by.project.dartlen.rss_reader.data.local.realm.RssUrlRealm;
 import by.project.dartlen.rss_reader.data.remote.Remote;
 import by.project.dartlen.rss_reader.data.remote.RemoteData;
@@ -32,7 +34,38 @@ public class Repository {
     }
 
     public void getRssFeed(@NonNull RssCallback callback){
+        getUrls(new GetUrls() {
+            @Override
+            public void onGetUrls(List<RssUrlRealm> result) {
+                if(result.size()>0) {
+                    RssItemsDataModelMapper mapper = new RssItemsDataModelMapper();
+                    List<RssItemRealm> listRealm = mLocalData.getRssItemsRealm();
+                    if (listRealm.size()>0)
+                        callback.onLogined(mapper.mapToRssItemList(listRealm));
+                    else
+                        callback.onFailed("no data");
 
+                    for(RssUrlRealm x: result){
+                        mRemoteData.getRssFeedRemote(new RssCallback() {
+                            @Override
+                            public void onLogined(List<RssItem> result) {
+                                mLocalData.saveRssItems(result);
+                            }
+
+                            @Override
+                            public void onFailed(String error) {
+
+                            }
+                        }, x.getUrl());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onFailed(error);
+            }
+        });
         /*retrofit2.Call<RssFeed> call = mRssService.getRss(url);
         call.enqueue(new Callback<RssFeed>() {
             @Override
@@ -48,6 +81,43 @@ public class Repository {
 
         /*RealmResults<RssItemRealm> x = mLocalData.getRssItemsRealm();
         Log.d("das","dsa");*/
+    }
+
+    public void getRssFeed(@NonNull RssCallback callback, String url){
+        getUrls(new GetUrls() {
+            @Override
+            public void onGetUrls(List<RssUrlRealm> result) {
+                if(result.size()>0) {
+                    RssItemsDataModelMapper mapper = new RssItemsDataModelMapper();
+                    List<RssItemRealm> listRealm = mLocalData.getRssItemsRealm();
+                    if (listRealm.size()>0)
+                        callback.onLogined(mapper.mapToRssItemList(listRealm));
+                    else
+                        callback.onFailed("no data");
+
+                    for(RssUrlRealm x: result){
+                        if(x.getUrl().equals(url))
+                            mRemoteData.getRssFeedRemote(new RssCallback() {
+                                @Override
+                                public void onLogined(List<RssItem> result) {
+                                    mLocalData.saveRssItems(result);
+                                }
+
+                                @Override
+                                public void onFailed(String error) {
+
+                                }
+                            }, x.getUrl());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onFailed(error);
+            }
+        });
+
     }
 
     public void saveRssItems(List<RssItem> listRssItems){

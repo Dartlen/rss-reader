@@ -9,12 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.project.dartlen.rss_reader.R;
+import by.project.dartlen.rss_reader.data.rss.RssItem;
 import dagger.android.support.DaggerFragment;
 
 
@@ -34,6 +38,9 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
     @BindView(R.id.progress)
     ProgressBar mProgress;
 
+    @BindView(R.id.norss)
+    TextView noRss;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -44,6 +51,7 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRssPresenter.takeView(this);
+
     }
 
     @Nullable
@@ -51,10 +59,12 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_rss, container, false);
         ButterKnife.bind(this, v);
-
-
-        mRssPresenter.start();
         adapter = new RssAdapter();
+        mRssPresenter.start();
+
+
+
+
         GridLayoutManager linearLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -76,5 +86,21 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
     @Override
     public void hideProgress() {
         mProgress.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showNoRss() {
+        noRss.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNoRss() {
+        noRss.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showRss(List<RssItem> list) {
+        adapter.addRss(list);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 }

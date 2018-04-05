@@ -15,27 +15,31 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/iv"
+            android:layout_below="@+id/image"
             android:text="Google"
             android:textColor="@color/grey_500"
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/iv"
+            android:layout_alignBottom="@+id/image"
             android:layout_alignParentStart="true"
             android:text="Pixel C"
             android:textColor="@color/grey_700"
             android:textSize="18sp" />
 
         <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/iv"
+            android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
             app:riv_corner_radius_bottom_left="0dp"
             app:riv_corner_radius_bottom_right="0dp"
