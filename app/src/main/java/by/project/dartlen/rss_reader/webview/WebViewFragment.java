@@ -11,6 +11,9 @@ import android.webkit.WebView;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import by.project.dartlen.rss_reader.R;
 import dagger.android.support.DaggerFragment;
 
 public class WebViewFragment extends DaggerFragment implements WebViewContract.View {
@@ -20,6 +23,9 @@ public class WebViewFragment extends DaggerFragment implements WebViewContract.V
 
     @Inject
     public WebViewFragment(){}
+
+    @BindView(R.id.webview)
+    WebView webView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +41,11 @@ public class WebViewFragment extends DaggerFragment implements WebViewContract.V
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View root = inflater.inflate(R.layout.fragment_webview, container, false);
+        String strtext = getArguments().getString("url");
+        ButterKnife.bind(this, root);
+        webView.loadUrl(strtext);
+        return root;
     }
 
 }

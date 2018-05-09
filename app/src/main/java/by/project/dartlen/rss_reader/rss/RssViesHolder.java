@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
@@ -15,11 +16,8 @@ public class RssViesHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.title)
     TextView title;
 
-    @BindView(R.id.description)
-    TextView description;
-
-    @BindView(R.id.image)
-    RoundedImageView image;
+    @BindView(R.id.my_image_view)
+    SimpleDraweeView image;
 
     public RssViesHolder(View view){
         super(view);

@@ -16,6 +16,7 @@ public interface RssContract {
     }
     interface Presenter extends BasePresenter<RssContract.View>{
         void start();
+        void onClick(String url);
     }
 
 }

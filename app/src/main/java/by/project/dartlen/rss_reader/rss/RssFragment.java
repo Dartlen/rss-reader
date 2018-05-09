@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,13 +20,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.project.dartlen.rss_reader.R;
 import by.project.dartlen.rss_reader.data.rss.RssItem;
+import by.project.dartlen.rss_reader.di.scope.ActivityScope;
+import by.project.dartlen.rss_reader.webview.WebViewFragment;
 import dagger.android.support.DaggerFragment;
 
-
-public class RssFragment extends DaggerFragment implements RssContract.View {
+@ActivityScope
+public class RssFragment extends DaggerFragment implements RssContract.View, onClickListener {
 
     @Inject
     RssContract.Presenter mRssPresenter;
+
+    @Inject
+    WebViewFragment mWebViewFragment;
 
     @Inject
     public RssFragment(){}
@@ -59,10 +65,8 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_rss, container, false);
         ButterKnife.bind(this, v);
-        adapter = new RssAdapter();
+        adapter = new RssAdapter(this);
         mRssPresenter.start();
-
-
 
 
         GridLayoutManager linearLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -80,7 +84,7 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
 
     @Override
     public void showProgress() {
-        mProgress.setVisibility(View.VISIBLE);
+        //mProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -102,5 +106,21 @@ public class RssFragment extends DaggerFragment implements RssContract.View {
     public void showRss(List<RssItem> list) {
         adapter.addRss(list);
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    public void clearData(){
+        adapter.clearData();
+    }
+
+    @Override
+    public void onClick(String url) {
+
+        if(getActivity()!=null) {
+            final Bundle bundle = new Bundle();
+            bundle.putString("url", url);
+
+            mWebViewFragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment, mWebViewFragment).addToBackStack("WebView").commit();
+        }
     }
 }

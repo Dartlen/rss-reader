@@ -30,6 +30,24 @@ public class LocalData {
         return realm.where(RssItemRealm.class).findAll();
     }
 
+    public RealmResults<RssItemRealm> getRssItemsRealm(String url){
+        getUrls(new GetUrls() {
+            @Override
+            public RealmResults<RssItemRealm> onGetUrls(List<RssUrlRealm> result) {
+                for(RssUrlRealm x: result)
+                    if(x.equals(result))
+                        return realm.where(RssItemRealm.class).equalTo("urlId", x.getId()).findAll();
+                return null;
+            }
+
+            @Override
+            public void onFailed(String error) {
+                return;
+            }
+        });
+        return null;
+    }
+
     public void saveRssItems(List<RssItem> listRssItems){
         realm.executeTransactionAsync(realm -> {
 

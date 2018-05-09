@@ -14,4 +14,5 @@ public interface RssService {
      */
     @GET
     Call<RssFeed> getRss(@Url String url);
+
 }

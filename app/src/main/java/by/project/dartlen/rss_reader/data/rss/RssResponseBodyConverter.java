@@ -26,7 +26,9 @@ final class RssResponseBodyConverter<T> implements Converter<ResponseBody, RssFe
             SAXParser saxParser = parserFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
             xmlReader.setContentHandler(parser);
+
             InputSource inputSource = new InputSource(value.charStream());
+
             xmlReader.parse(inputSource);
             ArrayList<RssItem> items = parser.getItems();
             rssFeed.setItems(items);

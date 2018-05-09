@@ -1,5 +1,6 @@
 package by.project.dartlen.rss_reader;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.LeakCanary;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ public class App extends DaggerApplication {
 
         }
         LeakCanary.install(this);
+        Fresco.initialize(this);
 
         return appComponets;
     }

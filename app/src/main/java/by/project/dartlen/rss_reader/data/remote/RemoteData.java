@@ -38,10 +38,14 @@ public class RemoteData {
         mRssService.getRss(url).enqueue(new Callback<RssFeed>() {
             @Override
             public void onResponse(Call<RssFeed> call, Response<RssFeed> response) {
-                if(response.body().getItems().size()!=0)
-                    callback.onValidate(true);
-                else
+                if(response.body().getItems()==null) {
+                    if (response.body().getItems().size() != 0)
+                        callback.onValidate(true);
+                    else
+                        callback.onFailed("Неверная url");
+                }else{
                     callback.onFailed("Неверная url");
+                }
             }
 
             @Override

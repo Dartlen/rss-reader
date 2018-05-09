@@ -63,4 +63,9 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+    implementation 'com.facebook.fresco:fresco:1.9.0'
+    implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.9.3@aar'
+    implementation 'io.reactivex:rxjava:1.2.2'
+    compile project(path: ':library')
 }

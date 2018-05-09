@@ -9,6 +9,7 @@ import by.project.dartlen.rss_reader.data.local.realm.RssUrlRealm;
 import by.project.dartlen.rss_reader.data.remote.callbacks.GetUrls;
 import by.project.dartlen.rss_reader.data.remote.callbacks.RssCallback;
 import by.project.dartlen.rss_reader.data.rss.RssItem;
+import ru.terrakok.cicerone.Router;
 
 public class RssPresenter implements RssContract.Presenter {
 
@@ -46,5 +47,10 @@ public class RssPresenter implements RssContract.Presenter {
                 mRssFragment.showNoRss();
             }
         });
+    }
+
+    @Override
+    public void onClick(String url) {
+
     }
 }

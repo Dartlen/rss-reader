@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * RSS Feed XML parser
  */
-class XMLParser extends DefaultHandler {
+public class XMLParser extends DefaultHandler {
 
     private static final String sEmptyString = "";
     private static final String sItem = "item";
@@ -37,7 +37,7 @@ class XMLParser extends DefaultHandler {
     private RssItem mRssItem;
     private final ArrayList<RssItem> mRssItems;
 
-    XMLParser() {
+    public XMLParser() {
         super();
         mRssItems = new ArrayList<>();
     }
@@ -192,7 +192,7 @@ class XMLParser extends DefaultHandler {
         return s.replace("\n", "");
     }
 
-    ArrayList<RssItem> getItems() {
+    public ArrayList<RssItem> getItems() {
         return mRssItems;
     }
 }

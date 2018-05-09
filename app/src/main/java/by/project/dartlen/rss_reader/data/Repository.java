@@ -2,6 +2,7 @@ package by.project.dartlen.rss_reader.data;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,11 +19,10 @@ import by.project.dartlen.rss_reader.data.remote.callbacks.GetUrls;
 import by.project.dartlen.rss_reader.data.remote.callbacks.RssCallback;
 import by.project.dartlen.rss_reader.data.remote.callbacks.RssValidateCallback;
 import by.project.dartlen.rss_reader.data.rss.RssItem;
+import io.realm.RealmResults;
 
 @Singleton
 public class Repository {
-
-
 
     final private RemoteData mRemoteData;
     final private LocalData mLocalData;
@@ -36,7 +36,7 @@ public class Repository {
     public void getRssFeed(@NonNull RssCallback callback){
         getUrls(new GetUrls() {
             @Override
-            public void onGetUrls(List<RssUrlRealm> result) {
+            public RealmResults<RssItemRealm> onGetUrls(List<RssUrlRealm> result) {
                 if(result.size()>0) {
                     RssItemsDataModelMapper mapper = new RssItemsDataModelMapper();
                     List<RssItemRealm> listRealm = mLocalData.getRssItemsRealm();
@@ -59,6 +59,7 @@ public class Repository {
                         }, x.getUrl());
                     }
                 }
+                return null;
             }
 
             @Override
@@ -84,23 +85,18 @@ public class Repository {
     }
 
     public void getRssFeed(@NonNull RssCallback callback, String url){
-        getUrls(new GetUrls() {
+        /*getUrls(new GetUrls() {
             @Override
             public void onGetUrls(List<RssUrlRealm> result) {
                 if(result.size()>0) {
-                    RssItemsDataModelMapper mapper = new RssItemsDataModelMapper();
-                    List<RssItemRealm> listRealm = mLocalData.getRssItemsRealm();
-                    if (listRealm.size()>0)
-                        callback.onLogined(mapper.mapToRssItemList(listRealm));
-                    else
-                        callback.onFailed("no data");
 
-                    for(RssUrlRealm x: result){
+
+                    /*for(RssUrlRealm x: result){
                         if(x.getUrl().equals(url))
                             mRemoteData.getRssFeedRemote(new RssCallback() {
                                 @Override
                                 public void onLogined(List<RssItem> result) {
-                                    mLocalData.saveRssItems(result);
+                                    callback.onLogined(result);
                                 }
 
                                 @Override
@@ -108,16 +104,40 @@ public class Repository {
 
                                 }
                             }, x.getUrl());
-                    }
-                }
+                    }*/
+            /*    }
             }
 
             @Override
             public void onFailed(String error) {
                 callback.onFailed(error);
             }
-        });
+        });*/
+        /*RssItemsDataModelMapper mapper = new RssItemsDataModelMapper();
+        List<RssItem> listRealm = mapper.mapToRssItemList(mLocalData.getRssItemsRealm());
 
+
+        for(RssItem x: listRealm){
+            if(((RssItem)x).getLink().equals(url)){
+                list.add(x);
+            }
+        }*/
+        /*List<RssItem> list = new ArrayList<>();
+        if (list.size()>0)
+            callback.onLogined(list);
+        else
+            callback.onFailed("no data");*/
+        mRemoteData.getRssFeedRemote(new RssCallback() {
+            @Override
+            public void onLogined(List<RssItem> result) {
+                callback.onLogined(result);
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onFailed(error);
+            }
+        }, url);
     }
 
     public void saveRssItems(List<RssItem> listRssItems){
@@ -145,8 +165,9 @@ public class Repository {
     public void getUrls(final GetUrls callback){
         mLocalData.getUrls(new GetUrls() {
             @Override
-            public void onGetUrls(List<RssUrlRealm> result) {
+            public RealmResults<RssItemRealm> onGetUrls(List<RssUrlRealm> result) {
                 callback.onGetUrls(result);
+                return null;
             }
 
             @Override
